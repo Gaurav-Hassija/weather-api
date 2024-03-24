@@ -10,11 +10,13 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 import { LocationService } from './location.service';
 import { IAddLocation, IUpdateLocation } from 'src/core/interface/request_body';
-import { addLocationValidator } from 'src/core/validator/request-body-validator';
+import {
+  addLocationValidator,
+  updateLocationValidator,
+} from 'src/core/validator/request-body-validator';
 
 @Controller('location')
 export class LocationController {
@@ -28,34 +30,25 @@ export class LocationController {
   ) {
     await addLocationValidator(body);
     const response = await this.locationService.addLocation(body);
-
-    return res.status(StatusCodes.OK).send(response);
+    return res.send(response);
   }
 
   @Get()
-  async getAllLocations(@Req() req: Request, @Res() res: Response) {
+  async getAllLocations(@Res() res: Response) {
     const response = await this.locationService.getAllLocations();
-    return res.status(StatusCodes.OK).send(response);
+    return res.send(response);
   }
 
   @Get(':id')
-  async getLocationById(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('id') id: string,
-  ) {
+  async getLocationById(@Res() res: Response, @Param('id') id: number) {
     const response = await this.locationService.getLocationById(id);
-    return res.status(StatusCodes.OK).send(response);
+    return res.send(response);
   }
 
   @Delete(':id')
-  async deleteLocation(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('id') id: string,
-  ) {
+  async deleteLocation(@Res() res: Response, @Param('id') id: number) {
     const response = await this.locationService.deleteLocation(id);
-    return res.status(StatusCodes.OK).send(response);
+    return res.send(response);
   }
 
   @Patch(':id')
@@ -63,9 +56,10 @@ export class LocationController {
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: IUpdateLocation,
-    @Param('id') id: string,
+    @Param('id') id: number,
   ) {
+    await updateLocationValidator(body);
     const response = await this.locationService.updateLocation(id, body);
-    return res.status(StatusCodes.OK).send(response);
+    return res.send(response);
   }
 }

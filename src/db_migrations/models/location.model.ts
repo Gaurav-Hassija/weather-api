@@ -14,6 +14,12 @@ export class LocationModel {
   @Column('numeric', { precision: 12, scale: 8 })
   longitude: string;
 
+  @Column({ default: false })
+  is_active: boolean;
+
+  @Column({ default: false })
+  is_deleted: boolean;
+
   @Column({
     type: 'timestamp without time zone',
     default: () => 'CURRENT_TIMESTAMP',
