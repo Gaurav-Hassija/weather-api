@@ -3,16 +3,16 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity({ name: `location` })
 export class LocationModel {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ unique: true })
   name: string;
 
   @Column('numeric', { precision: 11, scale: 8 })
-  latitude: string;
+  latitude: number;
 
   @Column('numeric', { precision: 12, scale: 8 })
-  longitude: string;
+  longitude: number;
 
   @Column({ default: false })
   is_active: boolean;

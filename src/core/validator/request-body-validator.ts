@@ -43,4 +43,33 @@ const updateLocationValidator = async (body: IUpdateLocation) => {
   }
 };
 
-export { addLocationValidator, updateLocationValidator };
+const forecastWeather = async (pathParams) => {
+  try {
+    const schema = Joi.object({
+      id: Joi.number().required(),
+    });
+
+    await schema.validateAsync(pathParams, joiConfig);
+  } catch (err) {
+    throw new HttpException(parseErrorsFromJoi(err), HttpStatus.BAD_REQUEST);
+  }
+};
+
+const forecastHistory = async (queryParams) => {
+  try {
+    const schema = Joi.object({
+      days: Joi.number().required().min(1).max(15),
+    });
+
+    await schema.validateAsync(queryParams, joiConfig);
+  } catch (err) {
+    throw new HttpException(parseErrorsFromJoi(err), HttpStatus.BAD_REQUEST);
+  }
+};
+
+export {
+  addLocationValidator,
+  updateLocationValidator,
+  forecastWeather,
+  forecastHistory,
+};

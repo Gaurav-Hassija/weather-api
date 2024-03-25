@@ -1,6 +1,6 @@
 import { LocationModel } from 'src/db_migrations/models/location.model';
 
-export const transformLocationData = async (
+export const transformLocationData = (
   location: LocationModel | LocationModel[],
 ) => {
   if (Array.isArray(location)) {

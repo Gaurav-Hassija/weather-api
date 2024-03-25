@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -17,10 +18,15 @@ import {
   addLocationValidator,
   updateLocationValidator,
 } from 'src/core/validator/request-body-validator';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('location')
 export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+  constructor(
+    private readonly locationService: LocationService,
+    private readonly logger: Logger,
+  ) {}
 
   @Post()
   async addLocation(
@@ -28,26 +34,45 @@ export class LocationController {
     @Res() res: Response,
     @Body() body: IAddLocation,
   ) {
+    this.logger.log(`Api requested : ${req.originalUrl}`);
+    this.logger.log(`Request Body : ${body}`);
     await addLocationValidator(body);
     const response = await this.locationService.addLocation(body);
+    this.logger.log(`Response Data : ${JSON.stringify(response)}`);
     return res.send(response);
   }
 
   @Get()
-  async getAllLocations(@Res() res: Response) {
+  async getAllLocations(@Req() req: Request, @Res() res: Response) {
+    this.logger.log(`Api requested : ${req.originalUrl}`);
     const response = await this.locationService.getAllLocations();
+    this.logger.log(`Response Data : ${JSON.stringify(response)}`);
     return res.send(response);
   }
 
   @Get(':id')
-  async getLocationById(@Res() res: Response, @Param('id') id: number) {
+  async getLocationById(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('id') id: number,
+  ) {
+    this.logger.log(`Api requested : ${req.originalUrl}`);
+    this.logger.log(`Request Params : ${id}`);
     const response = await this.locationService.getLocationById(id);
+    this.logger.log(`Response Data : ${JSON.stringify(response)}`);
     return res.send(response);
   }
 
   @Delete(':id')
-  async deleteLocation(@Res() res: Response, @Param('id') id: number) {
+  async deleteLocation(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('id') id: number,
+  ) {
+    this.logger.log(`Api requested : ${req.originalUrl}`);
+    this.logger.log(`Request Params : ${id}`);
     const response = await this.locationService.deleteLocation(id);
+    this.logger.log(`Response Data : ${JSON.stringify(response)}`);
     return res.send(response);
   }
 
@@ -58,8 +83,12 @@ export class LocationController {
     @Body() body: IUpdateLocation,
     @Param('id') id: number,
   ) {
+    this.logger.log(`Api requested : ${req.originalUrl}`);
+    this.logger.log(`Request Body : ${body}`);
+    this.logger.log(`Request Params : ${id}`);
     await updateLocationValidator(body);
     const response = await this.locationService.updateLocation(id, body);
+    this.logger.log(`Response Data : ${JSON.stringify(response)}`);
     return res.send(response);
   }
 }
