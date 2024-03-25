@@ -131,6 +131,7 @@ export class LocationService {
 
   async updateLocation(id: number, body: IUpdateLocation) {
     try {
+      // check if location already exists
       const existingLocation = await this.locationRepository.findOne({
         where: { id },
       });
@@ -140,6 +141,7 @@ export class LocationService {
 
       const { name, latitude, longitude } = body;
 
+      // create updated payload for the data to be updated
       const locationPayloadToUpdate: Partial<LocationModel> = {};
       if (name) {
         locationPayloadToUpdate.name = name;
@@ -151,6 +153,7 @@ export class LocationService {
         locationPayloadToUpdate.longitude = longitude;
       }
 
+      // update new data in DB
       await this.locationRepository.update(
         {
           id,

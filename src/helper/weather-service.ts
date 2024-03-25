@@ -114,6 +114,10 @@ const summarizeData = (forecastDay: Array<IForecastday>, length: number) => {
   };
 };
 
+/*
+  daily forecast api update the data every 15 min
+  so below function is use to store the response for 15 mins
+*/
 export const getForecastExpiry = (epoch: number) => {
   const expiryDate = new Date(epoch * 1000);
   console.log(expiryDate);
@@ -122,6 +126,10 @@ export const getForecastExpiry = (epoch: number) => {
   return expiryDate.getTime() - new Date().getTime();
 };
 
+/*
+  weather api will return same data if the request is for same number of days
+  so the repsonse for the same request will be cached till midnight
+*/
 export const getHistoryExpiry = () => {
   const expiryDate = new Date();
   expiryDate.setHours(23);

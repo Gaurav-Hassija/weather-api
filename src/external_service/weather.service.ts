@@ -39,14 +39,14 @@ export class WeatherApiService {
       return transformedWeatherData;
     } catch (error) {
       this.logger.error(
-        `Message - ${error.response.data.error.message}, Status - ${error.response.status}`,
+        `Message - ${error.response.data.error.message} Status - ${error.response.status}`,
       );
       throw new InternalServerErrorException({
         message: `We're sorry, but we're currently unable to fulfill your request. Please try again later.`,
-        status: error.response.status,
       });
     }
   }
+
 
   async historyData(latitude: number, longitude: number, days: number) {
     try {
@@ -87,11 +87,10 @@ export class WeatherApiService {
       return transformedHistoryData;
     } catch (error) {
       this.logger.error(
-        `Message - ${error.response.data.error.message}, Status - ${error.response.status}`,
+        `Message - ${error.response.data.error.message} Status - ${error.response.status}`,
       );
       throw new InternalServerErrorException({
         message: `We're sorry, but we're currently unable to fulfill your request. Please try again later.`,
-        status: error.response.status,
       });
     }
   }

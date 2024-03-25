@@ -32,16 +32,20 @@ export class WeatherService {
 
   async getHistory(id: number, days: number) {
     try {
+      // check if location exists
       const existingLocation = await this.locationRepository.findOne({
         where: { id },
       });
       if (!existingLocation) {
         throw new BadRequestException('Location does not exists');
       }
+
+      // check if data is already cached
       const cachedHistoryData = await this.cacheManager.get<
         ReturnType<typeof transformWeatherHistoryData>
       >(`${id}_${days}`);
 
+      // if cached data is not present make an api call
       const weatherHistoryData: ReturnType<typeof transformWeatherHistoryData> =
         cachedHistoryData ??
         (await this.weatherApiService.historyData(
@@ -49,6 +53,8 @@ export class WeatherService {
           existingLocation.longitude,
           days,
         ));
+
+      // Set the new api response to cache
       if (!cachedHistoryData) {
         await this.cacheManager.set(
           `${id}_${days}`,
@@ -56,6 +62,7 @@ export class WeatherService {
           getHistoryExpiry(),
         );
       }
+
       return {
         code: StatusCodes.OK,
         message: 'History forecast along with summary',
@@ -69,6 +76,7 @@ export class WeatherService {
 
   async getForecast(id: number) {
     try {
+      // check if location exists
       const existingLocation = await this.locationRepository.findOne({
         where: { id },
       });
@@ -76,10 +84,12 @@ export class WeatherService {
         throw new BadRequestException('Location does not exists');
       }
 
+      // check if data is already cached
       const cachedWeatherData = await this.cacheManager.get<
         ReturnType<typeof transformWeatherData>
       >(`${id}`);
 
+      // if cached data is not present make an api call
       const weatherData: ReturnType<typeof transformWeatherData> =
         cachedWeatherData ??
         (await this.weatherApiService.forecastData(
@@ -87,6 +97,7 @@ export class WeatherService {
           existingLocation.longitude,
         ));
 
+      // Set the new api response to cache
       if (!cachedWeatherData) {
         await this.cacheManager.set(
           `${id}`,
